@@ -1,70 +1,189 @@
-# Getting Started with Create React App
+# 🔷 Visual Flow Builder with Simulation & Cycle Detection
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A powerful **React Flow-based visual flow editor** built with **React**, **Redux Toolkit**, and **Tailwind CSS**, allowing users to:
 
-## Available Scripts
+- Drag and drop configurable nodes onto a canvas
+- Create and save connection flows
+- Detect and highlight invalid flow cycles
+- Simulate node execution logic
+- View logs in a real-time console
+- Visually highlight problematic nodes for better UX
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## 🚀 Features
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- ⚙️ Drag-and-drop node creation
+- 🔌 Edge connections between nodes
+- 💾 Persistent state using `localStorage` + Redux
+- 🔁 Cycle detection with visual highlighting
+- 🧪 Flow simulation with per-node log output
+- 💬 Live error/success console
+- 🧩 Node configuration panel for dynamic property editing
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+---
 
-### `npm test`
+## 📦 Tech Stack
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- **React 18**
+- **React Flow**
+- **Redux Toolkit**
+- **Tailwind CSS**
+- **LocalStorage** (for state persistence)
 
-### `npm run build`
+---
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 📂 Project Structure
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+.
+├── README.md
+├── package.json
+├── public/
+│ ├── favicon.ico
+│ ├── index.html
+│ ├── logo192.png
+│ ├── logo512.png
+│ ├── manifest.json
+│ └── robots.txt
+├── src/
+│ ├── App.js
+│ ├── App.css
+│ ├── index.js
+│ ├── index.css
+│ ├── logo.svg
+│ ├── App.test.js
+│ ├── setupTests.js
+│ ├── reportWebVitals.js
+│ ├── components/
+│ │ ├── Canvas.jsx
+│ │ ├── NodeConfigPanel.jsx
+│ │ ├── NodeEditor.jsx
+│ │ ├── OutputConsole.jsx
+│ │ └── Sidebar.jsx
+│ ├── redux/
+│ │ ├── builderSlice.js
+│ │ └── store.js
+│ └── data/
+│ └── blocks.js
+└── tailwind.config.js
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## 🛠️ Setup & Installation
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### 1. Clone the repository
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```bash
+git clone https://github.com/mamta-vyas/visual-agent-builder.git
+cd visual-agent-builder
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+2. Install dependencies
+npm install
 
-## Learn More
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+3. Start the development server
+npm start
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+🎯 Key Functionalities
+🧩 Canvas (Canvas.jsx)
+Displays a React Flow canvas with full drag/drop capabilities
 
-### Code Splitting
+Handles onConnect, onDrop, onNodesChange, and onEdgesChange events
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Automatically syncs node and edge state to both Redux and localStorage
 
-### Analyzing the Bundle Size
+⚠️ Cycle Detection
+Implements a DFS-based algorithm to check for cycles
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+Prevents simulation if cycles are present
 
-### Making a Progressive Web App
+Visually highlights nodes involved in a cycle using a red border and background
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+🧪 Simulation Mode
+Simulates each node's logic based on its configuration
 
-### Advanced Configuration
+Outputs detailed logs per node during simulation
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+Validates node configuration before execution
 
-### Deployment
+📝 Output Console (OutputConsole.jsx)
+Real-time console logs of simulation results
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+Supports log clearing for repeated runs
 
-### `npm run build` fails to minify
+⚙️ Node Configuration Panel (NodeConfigPanel.jsx)
+Allows editing of selected node properties
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Updates node data live on the canvas
+
+✅ UX Enhancements
+Cycle Visual Feedback:
+
+Nodes in a cycle are rendered with red outlines and backgrounds
+
+Simulation is blocked until cycles are resolved
+
+📌 Commit History Summary
+Initial Setup:
+
+React + Vite + Tailwind CSS + Redux Toolkit + React Flow configuration
+
+Core Canvas Logic:
+
+Node drag/drop, edge connection logic
+
+Redux integration with localStorage persistence
+
+Cycle Detection:
+
+DFS-based algorithm implementation
+
+Prevent simulation if cycles detected
+
+Visual Feedback:
+
+Highlighting cycle nodes with styling
+
+Log simulation results to output console
+
+Simulation Engine:
+
+Config-based simulation with validation
+
+Per-node log messages
+
+Output Console & UX Polish:
+
+Scrollable console
+
+Clear logs button
+
+Visual state feedback
+
+🧪 How to Test
+Drag nodes from the sidebar into the canvas
+
+Connect the nodes to form a flow
+
+(Optional) Create a cycle by connecting a node back to a previous node
+
+Click "Simulate Flow"
+
+✅ If there's a cycle, involved nodes will be highlighted and an error will show in the console.
+
+🙌 Contributing
+Pull requests are welcome!
+For major feature suggestions or changes, please open an issue first to discuss your ideas.
+
+✨ Credits
+Built by Mamta Vyas using:
+
+React Flow
+
+Redux Toolkit
+
+Tailwind CSS
+
+❤️ and curiosity for visual systems
+

@@ -28,35 +28,42 @@ const Canvas = () => {
   const [edges, setLocalEdges, onEdgesChange] = useEdgesState([]);
   const [logs, setLogs] = useState([]);
 
-  const detectCycle = (nodes, edges) => {
-    const graph = {};
-    nodes.forEach((node) => (graph[node.id] = []));
-    edges.forEach(({ source, target }) => {
-      graph[source].push(target);
-    });
+ const detectCycle = (nodes, edges) => {
+  const graph = {};
+  const visited = {};
+  const recStack = {};
+  const cycleNodes = new Set();
 
-    const visited = {};
-    const recStack = {};
+  nodes.forEach((node) => (graph[node.id] = []));
+  edges.forEach(({ source, target }) => {
+    graph[source].push(target);
+  });
 
-    const dfs = (nodeId) => {
-      if (!visited[nodeId]) {
-        visited[nodeId] = true;
-        recStack[nodeId] = true;
+  const dfs = (nodeId) => {
+    if (!visited[nodeId]) {
+      visited[nodeId] = true;
+      recStack[nodeId] = true;
 
-        for (const neighbor of graph[nodeId]) {
-          if (!visited[neighbor] && dfs(neighbor)) {
-            return true;
-          } else if (recStack[neighbor]) {
-            return true;
-          }
+      for (const neighbor of graph[nodeId]) {
+        if (!visited[neighbor] && dfs(neighbor)) {
+          cycleNodes.add(neighbor);
+          cycleNodes.add(nodeId);
+          return true;
+        } else if (recStack[neighbor]) {
+          cycleNodes.add(neighbor);
+          cycleNodes.add(nodeId);
+          return true;
         }
       }
-      recStack[nodeId] = false;
-      return false;
-    };
-
-    return nodes.some((node) => dfs(node.id));
+    }
+    recStack[nodeId] = false;
+    return false;
   };
+
+  const hasCycle = nodes.some((node) => dfs(node.id));
+  return hasCycle ? Array.from(cycleNodes) : null;
+};
+
 
   const saveFlow = useCallback((nodesToSave, edgesToSave) => {
     localStorage.setItem("flow-data", JSON.stringify({ nodes: nodesToSave, edges: edgesToSave }));
@@ -112,39 +119,59 @@ const Canvas = () => {
     dispatch(selectNode(node));
   };
 
-  const simulateFlow = () => {
-    const newLogs = [];
+const simulateFlow = () => {
+  const newLogs = [];
+  const cycleNodeIds = detectCycle(nodes, edges);
 
-    if (nodes.length === 0) {
-      newLogs.push({ type: "error", message: "🚨 No nodes to simulate." });
-      setLogs(newLogs);
-      return;
-    }
+  if (nodes.length === 0) {
+    newLogs.push({ type: "error", message: "🚨 No nodes to simulate." });
+    setLogs(newLogs);
+    return;
+  }
 
-    const hasCycle = detectCycle(nodes, edges);
-    if (hasCycle) {
-      newLogs.push({ type: "error", message: "🔁 Cycle detected in flow. Simulation aborted." });
-      setLogs(newLogs);
-      return;
-    }
-
-    nodes.forEach((node) => {
-      const { label, type, config } = node.data;
-      if (!config || Object.keys(config).length === 0) {
-        newLogs.push({
-          type: "error",
-          message: `⚠️ ${label} (${type}) is missing config.`,
-        });
-      } else {
-        newLogs.push({
-          type: "success",
-          message: `✅ ${label} (${type}) ran with config: ${JSON.stringify(config)}`,
-        });
-      }
+  if (cycleNodeIds) {
+    newLogs.push({
+      type: "error",
+      message: "🔁 Cycle detected in flow. Highlighting affected nodes.",
     });
 
+    const updatedNodes = nodes.map((node) =>
+      cycleNodeIds.includes(node.id)
+        ? {
+            ...node,
+            style: {
+              border: "2px solid red",
+              background: "#ffe6e6",
+            },
+          }
+        : node
+    );
+
+    setLocalNodes(updatedNodes);
+    saveFlow(updatedNodes, edges);
     setLogs(newLogs);
-  };
+    return;
+  }
+
+  // Continue normal simulation
+  nodes.forEach((node) => {
+    const { label, type, config } = node.data;
+    if (!config || Object.keys(config).length === 0) {
+      newLogs.push({
+        type: "error",
+        message: `⚠️ ${label} (${type}) is missing config.`,
+      });
+    } else {
+      newLogs.push({
+        type: "success",
+        message: `✅ ${label} (${type}) ran with config: ${JSON.stringify(config)}`,
+      });
+    }
+  });
+
+  setLogs(newLogs);
+};
+
 
   useEffect(() => {
     const saved = localStorage.getItem("flow-data");
