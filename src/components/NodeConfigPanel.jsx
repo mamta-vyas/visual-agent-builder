@@ -7,15 +7,16 @@ const NodeConfigPanel = ({ selectedNode, allNodes }) => {
   const [config, setConfig] = useState({});
 
   useEffect(() => {
-    if (selectedNode?.data?.config) {
+    console.log("Selected Node:", selectedNode);
+    if (selectedNode?.data?.config && typeof selectedNode.data.config === "object") {
       setConfig(selectedNode.data.config);
+    } else {
+      setConfig({});
     }
   }, [selectedNode]);
 
   const handleChange = (key, value) => {
     let parsedValue = value;
-
-    // Handle number parsing automatically
     if (!isNaN(config[key]) && !isNaN(Number(value))) {
       parsedValue = Number(value);
     }
@@ -39,11 +40,20 @@ const NodeConfigPanel = ({ selectedNode, allNodes }) => {
     localStorage.setItem("flow-data", JSON.stringify({ nodes: updatedNodes }));
   };
 
-  if (!selectedNode) return null;
+  if (!selectedNode || !selectedNode.data || !selectedNode.data.label) {
+    return <p className="text-gray-500">Click a node to edit its config</p>;
+  }
 
   return (
     <div className="p-4 border rounded bg-white shadow w-full">
-      <h2 className="font-bold text-lg mb-2">⚙️ Edit Config: {selectedNode.data.label}</h2>
+      <h2 className="font-bold text-lg mb-2">
+        ⚙️ Edit Config: {selectedNode.data.label || "Unnamed Node"}
+      </h2>
+
+      {Object.entries(config).length === 0 && (
+        <p className="text-gray-500 italic">No config to edit for this node.</p>
+      )}
+
       {Object.entries(config).map(([key, value]) => (
         <div key={key} className="mb-3">
           <label className="block font-medium text-sm mb-1 capitalize">{key}</label>

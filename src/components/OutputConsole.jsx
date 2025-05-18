@@ -10,7 +10,7 @@ const OutputConsole = ({ logs, onClear }) => {
   }, [logs]);
 
   return (
-    <div className="bg-black text-green-400 p-4 h-48 overflow-y-auto font-mono text-sm rounded-md shadow-md mt-4">
+    <div className="w-full bg-black text-green-400 p-4 h-48 overflow-y-auto font-mono text-sm rounded-md shadow-md">
       <div className="flex justify-between items-center mb-2">
         <span className="text-white font-bold">🧪 Simulation Console</span>
         <button

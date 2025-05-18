@@ -19,11 +19,27 @@ const builderSlice = createSlice({
     selectNode: (state, action) => {
       state.selectedNode = action.payload;
     },
-    updateNodeConfig: (state, action) => {
-      const { id, config } = action.payload;
-      const node = state.nodes.find((n) => n.id === id);
-      if (node) node.data.config = config;
-    },
+   updateNodeConfig: (state, action) => {
+  const { id, config } = action.payload;
+  const node = state.nodes.find((n) => n.id === id);
+  if (node) {
+    node.data.config = config;
+
+    
+    // Update selectedNode too if it matches the updated node
+    if (state.selectedNode && state.selectedNode.id === id) {
+  state.selectedNode = {
+    ...state.selectedNode,
+    data: {
+      ...state.selectedNode.data,
+      config,
+    }
+  };
+}
+
+  }
+},
+
   },
 });
 

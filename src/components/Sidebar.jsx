@@ -1,32 +1,6 @@
+// src/components/Sidebar.jsx
 import React from "react";
-import { FaDatabase, FaFilter, FaCogs } from "react-icons/fa";
-
-const nodeTypes = [
-  {
-    label: "Source",
-    icon: <FaDatabase />,
-    type: "source",
-    config: {
-      endpoint: "https://api.example.com/data", // default value
-    },
-  },
-  {
-    label: "Filter",
-    icon: <FaFilter />,
-    type: "filter",
-    config: {
-      condition: "item.value > 10", // default value
-    },
-  },
-  {
-    label: "Processor",
-    icon: <FaCogs />,
-    type: "processor",
-    config: {
-      threads: 2, // default value
-    },
-  },
-];
+import { agentBlocks, nodeTypes } from "../data/blocks";
 
 const Sidebar = () => {
   const handleDragStart = (event, block) => {
@@ -35,21 +9,42 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="w-1/4 p-4 border-r bg-gray-50">
-      <h2 className="text-xl font-semibold mb-4">⚙️ Node Blocks</h2>
+    <div className="w-64 p-4 border-r bg-gray-50 overflow-y-auto">
+      <h2 className="text-xl font-semibold mb-4">🧱 Node Library</h2>
 
-      <div className="space-y-2">
-        {nodeTypes.map((node) => (
+      {/* 🧠 AI Agent Blocks */}
+      <h3 className="text-md font-medium text-gray-700 mb-2">🤖 AI Agent Blocks</h3>
+      <div className="space-y-2 mb-4">
+        {agentBlocks.map((block) => (
           <div
-            key={node.type}
+            key={block.id}
             draggable
-            onDragStart={(e) => handleDragStart(e, node)}
+            onDragStart={(e) => handleDragStart(e, block)}
             className="flex items-center gap-3 p-3 bg-white border rounded shadow-sm hover:bg-blue-50 cursor-move transition-all"
           >
-            {node.icon}
+            <div className="w-2 h-2 rounded-full bg-blue-500" />
             <div>
-              <div className="font-medium">{node.label}</div>
-              <div className="text-xs text-gray-500">{node.type}</div>
+              <div className="font-medium">{block.label}</div>
+              <div className="text-xs text-gray-500">{block.type}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* 🧩 Data Pipeline Blocks */}
+      <h3 className="text-md font-medium text-gray-700 mb-2">🔧 Data Pipeline Blocks</h3>
+      <div className="space-y-2">
+        {nodeTypes.map((block) => (
+          <div
+            key={block.id}
+            draggable
+            onDragStart={(e) => handleDragStart(e, block)}
+            className="flex items-center gap-3 p-3 bg-white border rounded shadow-sm hover:bg-green-50 cursor-move transition-all"
+          >
+            {block.icon}
+            <div>
+              <div className="font-medium">{block.label}</div>
+              <div className="text-xs text-gray-500">{block.type}</div>
             </div>
           </div>
         ))}
